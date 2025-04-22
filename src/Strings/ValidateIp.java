@@ -1,3 +1,5 @@
+package Strings;
+
 public class ValidateIp {
     public static void main(String[] args) {
         validIp();
