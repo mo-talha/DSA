@@ -1,6 +1,6 @@
 package Sorting;
 
-import Utils.Utils;
+import Utils.Swap;
 
 import java.util.Arrays;
 
@@ -15,7 +15,7 @@ public class BubbleSort {
         int [] nums = {4, 1, 5, 2, 3};
         for (int i = 1; i < nums.length; i++){
             if (nums[i] < nums[i-1]){
-                Utils.swap(nums, i, i-1);
+                Swap.swap(nums, i, i-1);
             }
         }
 
@@ -28,7 +28,7 @@ public class BubbleSort {
         for (int i = nums.length - 1; i >= 0; i--){
             for (int j = 0; j < i; j++){
                 if (nums[j] > nums[j+1]){
-                    Utils.swap(nums, j, j+1);
+                    Swap.swap(nums, j, j+1);
                 }
             }
         }
