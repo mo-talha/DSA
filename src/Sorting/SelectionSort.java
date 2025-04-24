@@ -3,6 +3,11 @@ package Sorting;
 import java.util.Arrays;
 
 public class SelectionSort {
+    /*
+    Selection Sort - We iterate over the array and select the ith index as the min, we iterate using inner loop
+    and check if i + 1 < i, if yes we assign min = i
+    Finally on exiting the inner loop we swap the min with the ith index
+    **/
     public static void main(String[] args) {
         selectionSort();
     }
