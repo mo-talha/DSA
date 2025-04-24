@@ -5,6 +5,12 @@ import Utils.Swap;
 import java.util.Arrays;
 
 public class BubbleSort {
+/*
+Bubble Sort - This technique focuses on putting the largest elem of a sub-array on the last index
+- Iterate from o - n.len
+- Inner loop - Iterate from 0 - n.len - i - 0 (This formula will keep decreasing the end of the array)
+- Compare if j > j+1 if yes swap
+* */
     public static void main(String[] args) {
         bubbleSort2();
     }
