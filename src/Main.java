@@ -8,25 +8,53 @@ class LinkedList{
         this.value = value;
         this.next = node;
     }
+
+    public LinkedList(){
+        this.value = 0;
+        this.next = null;
+    }
+
+    public LinkedList createLinkedList(int[] nums){
+        LinkedList head = new LinkedList(nums[0], null);
+        LinkedList temp = head;
+
+        for (int i = 1; i < nums.length; i++){
+            LinkedList node = new LinkedList(nums[i], null);
+            temp.next = node;
+            temp = node;
+        }
+        return head;
+    }
+
+    public void printLinkedList(LinkedList head){
+        LinkedList temp = head;
+
+        while (temp != null){
+            System.out.println(temp.value);
+            temp = temp.next;
+        }
+    }
+
+    public LinkedList getTail(LinkedList head){
+        LinkedList temp = head;
+        while (temp.next != null){
+            temp = temp.next;
+        }
+        return temp;
+    }
 }
 
 public class Main{
     public static void main(String[] args){
-        // int[] nums = {2, 5, 1, 3};
-        // int[] nums = {4, 3, 2, 1};
-//         int[] nums = {6, 4, -5, 1, 8, 3, 2, -10, -4, 0, 4, -9};
-//        int[][] nums = {
-//                {1, 2, 3, 4},
-//                {5, 6, 7, 8},
-//                {9, 10, 11, 12}
-//        };
-//        int[] nums = {5,4,3,2,1,1000000000};
-//        int ans = aggressiveCows(nums, 2);
-//        System.out.println(ans);
-        LinkedList head = new LinkedList(1, null);
-        LinkedList node2 = new LinkedList(2, null);
-        head.next = node2;
-        System.out.println(head.next.value);
+        int[] nums = {1, 2, 3, 4, 5, 6};
+        LinkedList ll = new LinkedList();
+        LinkedList head = ll.createLinkedList(nums);
+        LinkedList tail = ll.getTail(head);
+        LinkedList fourthNode = head.next.next.next;
+        tail.next = fourthNode;
+
+        int len = getLenOfLoop(head);
+        System.out.println(len);
     }
 
     public static void swap(int[] nums, int a, int b){
@@ -860,4 +888,103 @@ public class Main{
         return ans;
     }
 
+    public static int findSmallestDivisor(int[] nums, int threshold){
+        int low = 1, high = findMax(nums);
+
+        while (low <= high){
+            int mid = (low + high)/2;
+
+            if (isDivisor(nums, mid, threshold)){
+                high = mid - 1;
+            } else {
+                low = mid + 1;
+            }
+        }
+        return low;
+    }
+
+    public static boolean isDivisor(int[] nums, int x, int threshold){
+        int sum = 0;
+
+        for (int num: nums){
+            sum += Math.ceilDiv(num, x);
+        }
+        return sum <= threshold;
+    }
+
+    /* Linked List */
+    public static LinkedList deleteKthNode(LinkedList head, int k){
+        LinkedList temp = head;
+        int count = 0;
+        LinkedList prev = null;
+
+        if (k == 1) {
+            head = head.next;
+            return head;
+        }
+
+        while (temp != null){
+            count += 1;
+
+            if (count == k){
+                prev.next = temp.next;
+                break;
+            }
+            prev = temp;
+            temp = temp.next;
+        }
+        return head;
+    }
+
+    public static LinkedList reverseLinkedListRecursively(LinkedList head){
+        if (head == null || head.next == null){
+            return head;
+        }
+
+        LinkedList newHead = reverseLinkedListRecursively(head.next);
+
+        LinkedList front = head.next;
+        front.next = head;
+        head.next = null;
+        return newHead;
+    }
+
+    public static LinkedList findStartingPoint(LinkedList head){
+        LinkedList slow = head, fast = head;
+
+        while (fast != null && fast.next != null){
+            slow = slow.next;
+            fast = fast.next.next;
+
+            if (slow == fast){
+                slow = head;
+                while (slow != fast){
+                    slow = slow.next;
+                    fast = fast.next;
+                }
+                return slow;
+            }
+        }
+        return null;
+    }
+
+    public static int getLenOfLoop(LinkedList head){
+        LinkedList slow = head, fast = head;
+        int count = 0;
+        while (fast != null && fast.next != null){
+            slow = slow.next;
+            fast = fast.next.next;
+
+            if (slow == fast){
+                slow = slow.next;
+
+                while (slow != fast){
+                    slow = slow.next;
+                    count +=1;
+                }
+                break;
+            }
+        }
+        return count;
+    }
 }
