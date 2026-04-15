@@ -46,15 +46,11 @@ class LinkedList{
 
 public class Main{
     public static void main(String[] args){
-        int[] nums = {1, 2, 3, 4, 5, 6};
+        int[] nums = {4, 3, 2, 1};
         LinkedList ll = new LinkedList();
         LinkedList head = ll.createLinkedList(nums);
-        LinkedList tail = ll.getTail(head);
-        LinkedList fourthNode = head.next.next.next;
-        tail.next = fourthNode;
-
-        int len = getLenOfLoop(head);
-        System.out.println(len);
+        LinkedList newHead = mergeSortLinkedList(head);
+        System.out.println(newHead.value);
     }
 
     public static void swap(int[] nums, int a, int b){
@@ -986,5 +982,52 @@ public class Main{
             }
         }
         return count;
+    }
+
+    public static LinkedList mergeTwoSortedLinkedLists(LinkedList head1, LinkedList head2){
+        LinkedList dummyHead = new LinkedList(-1, null);
+        LinkedList temp = dummyHead;
+        LinkedList temp1 = head1;
+        LinkedList temp2 = head2;
+
+        while (temp1 != null && temp2 != null){
+            if (temp1.value <= temp2.value){
+                temp.next = temp1;
+                temp = temp.next;
+                temp1 = temp1.next;
+            } else {
+                temp.next = temp2;
+                temp = temp.next;
+                temp2 = temp2.next;
+            }
+        }
+        if (temp1 != null) temp.next = temp1;
+        if (temp2 != null) temp.next = temp2;
+
+        return dummyHead.next;
+    }
+
+    public static LinkedList getMid1(LinkedList head){
+        LinkedList slow = head;
+        LinkedList fast = head.next;
+
+        while (fast != null && fast.next != null){
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        return slow;
+    }
+
+    public static LinkedList mergeSortLinkedList(LinkedList head){
+        if (head == null || head.next == null) return head;
+
+        LinkedList mid =getMid1(head);
+        LinkedList leftHead = head;
+        LinkedList rightHead = mid.next;
+        mid.next = null;
+
+        leftHead = mergeSortLinkedList(leftHead);
+        rightHead = mergeSortLinkedList(rightHead);
+        return mergeTwoSortedLinkedLists(leftHead, rightHead);
     }
 }
