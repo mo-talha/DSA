@@ -46,13 +46,10 @@ class LinkedList{
 
 public class Main{
     public static void main(String[] args){
-        int[] nums1 = {2,4,9};
-        int[] nums2 = {5,6,4,9};
-
+        int[] nums = {9, 9, 9};
         LinkedList ll = new LinkedList();
-        LinkedList head1 = ll.createLinkedList(nums1);
-        LinkedList head2 = ll.createLinkedList(nums2);
-        LinkedList newHead =addTwoNumbers(head1, head2);
+        LinkedList head = ll.createLinkedList(nums);
+        LinkedList newHead = addOneNumberOpMain(head);
         ll.printLinkedList(newHead);
     }
 
@@ -1071,19 +1068,6 @@ public class Main{
         return head;
     }
 
-    public static LinkedList removeDuplicatesOp(LinkedList head){
-        LinkedList current = head, prev = head;
-
-        while (current != null){
-            while (current != null && current.value == prev.value){
-                current = current.next;
-            }
-            prev.next = current;
-            prev = prev.next;
-        }
-        return head;
-    }
-
     // {2, 2, 2, 3, 3, 4, 4, 4, 5, 5}
     public static LinkedList removeDuplicatesOp1(LinkedList head){
         LinkedList prev = head;
@@ -1105,35 +1089,36 @@ public class Main{
 //    int[] nums2 = {5,6,4,9};
     public static LinkedList addTwoNumbers(LinkedList head1, LinkedList head2){
         int carry = 0;
-        LinkedList reversedHead1 = reverseLinkedListRecursively(head1);
-        LinkedList reversedHead2 = reverseLinkedListRecursively(head2);
+//        LinkedList reversedHead1 = reverseLinkedListRecursively(head1);
+//        LinkedList reversedHead2 = reverseLinkedListRecursively(head2);
         LinkedList dummyHead = new LinkedList(-1, null);
         LinkedList temp = dummyHead;
-        LinkedList temp1 = reversedHead1, temp2 = reversedHead2;
+//        LinkedList temp1 = reversedHead1, temp2 = reversedHead2;
+        LinkedList temp1 = head1, temp2 = head2;
         int sum = 0;
         while (temp1 != null && temp2 != null){
             sum = temp1.value + temp2.value + carry;
+            carry = sum/10;
             temp.next = new LinkedList(sum % 10, null);
             temp = temp.next;
             temp1 = temp1.next;
             temp2 = temp2.next;
-            carry = sum/10;
         }
 
         while (temp1 != null){
             sum = temp1.value + carry;
+            carry = sum/10;
             temp.next = new LinkedList(sum % 10, null);
             temp = temp.next;
             temp1 = temp1.next;
-            carry = sum/10;
         }
 
         while (temp2 != null){
             sum = temp2.value + carry;
+            carry = sum/10;
             temp.next = new LinkedList(sum % 10, null);
             temp = temp.next;
             temp2 = temp2.next;
-            carry = sum/10;
         }
 
         while (carry != 0){
@@ -1143,4 +1128,118 @@ public class Main{
 
         return reverseLinkedListRecursively(dummyHead.next);
     }
+
+    public static LinkedList addOneNumber(LinkedList head){
+        LinkedList revHead = reverseLinkedListRecursively(head);
+
+        LinkedList temp = revHead;
+        int carry = 1;
+        int sum;
+        while (temp != null && carry > 0){
+            sum = temp.value + carry;
+            temp.value = sum % 10;
+            carry = sum/10;
+
+            if (temp.next == null && carry > 0){
+                temp.next = new LinkedList(carry, null);
+                carry = 0;
+            }
+            temp=temp.next;
+        }
+
+        return reverseLinkedListRecursively(revHead);
+    }
+
+    public static LinkedList addOneNumberOpMain(LinkedList head){
+        int carry = addOneNumberOp(head);
+        if (carry > 0){
+            return new LinkedList(carry, head);
+        }
+        return head;
+    }
+
+    public static int addOneNumberOp(LinkedList head){
+        if (head == null){
+            return 1;
+        }
+        int carry = addOneNumberOp(head.next);
+        int sum = head.value + carry;
+        head.value = sum % 10;
+        carry = sum/10;
+        return carry;
+    }
+
+    public static LinkedList intersectionOfTwoLinkedListsOp(LinkedList head1, LinkedList head2){
+        LinkedList temp1 = head1, temp2 = head2;
+
+        while (temp1 != temp2){
+            temp1 = temp1 == null ? head2 : temp1.next;
+            temp2 = temp2 == null ? head1 : temp2.next;
+        }
+        return temp1;
+    }
+
+//    Recursion
+    public static double xPowNRec(int x, int n){
+        if (n == 0){
+            return 1;
+        }
+        return x * xPowN(x, n-1);
+    }
+
+    public static int xPowNRecOp(int x, int n){
+        if (n == 0){
+            return 1;
+        }
+        int xn = xPowNRecOp(x, n/2);
+        int xPowN = xn * xn;
+        if (n%2 == 1) return x * xPowN;
+        return xPowN;
+    }
+
+    public static int xPowNWithNegPowers(int x, int n){
+        int xPowN = xPowNRecOp(x, Math.abs(n));
+
+        return n < 0 ? 1/xPowN : xPowN;
+    }
+
+    public static void sortAStackRecursively(Stack<Integer> st){
+        if (st.isEmpty()){
+            return;
+        }
+        int peek = st.pop();
+        sortAStackRecursively(st);
+
+        insertAtRightPosition(st, peek);
+    }
+
+    public static void insertAtRightPosition(Stack<Integer> st, int num){
+        if (st.isEmpty() || num > st.peek()){
+            st.push(num);
+            return;
+        }
+        int top = st.pop();
+        insertAtRightPosition(st, num);
+        st.push(top);
+    }
+
+    public static void reverseAStack(Stack<Integer> st){
+        if (st.isEmpty()){
+            return;
+        }
+        int top = st.pop();
+        reverseAStack(st);
+        insertAtBottom(st, top);
+    }
+
+    public static void insertAtBottom(Stack<Integer> st, int num){
+        if (st.isEmpty()){
+            st.push(num);
+            return;
+        }
+        int peek = st.pop();
+        insertAtBottom(st, num);
+        st.push(peek);
+    }
+
 }
