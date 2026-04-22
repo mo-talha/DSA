@@ -45,12 +45,11 @@ class LinkedList{
 }
 
 public class Main{
+    static ArrayList<ArrayList<Integer>> res = new ArrayList<>();
     public static void main(String[] args){
-        int[] nums = {9, 9, 9};
-        LinkedList ll = new LinkedList();
-        LinkedList head = ll.createLinkedList(nums);
-        LinkedList newHead = addOneNumberOpMain(head);
-        ll.printLinkedList(newHead);
+        int[] nums = {1, 2};
+        combinationSum1(3, nums, 0, 0, new ArrayList<>());
+        System.out.println(res);
     }
 
     public static void swap(int[] nums, int a, int b){
@@ -1242,4 +1241,85 @@ public class Main{
         st.push(peek);
     }
 
+    // Backtracking
+//    public static void generateBinaryStringsOfSizeN(int n, StringBuilder temp){
+//        if (temp.length() == n){
+//            res.add(temp.toString());
+//            return;
+//        }
+//        temp.append("0");
+//        generateBinaryStringsOfSizeN(n, temp);
+//        temp.deleteCharAt(temp.length() - 1);
+//
+//        if (temp.isEmpty() || temp.charAt(temp.length()-1) != '1'){
+//            temp.append("1");
+//            generateBinaryStringsOfSizeN(n, temp);
+//            temp.deleteCharAt(temp.length() - 1);
+//        }
+//    }
+//
+//    public static void generateParenthesis(int n, StringBuilder temp, int open, int close){
+//        if (temp.length() == n * 2){
+//            res.add(temp.toString());
+//            return;
+//        }
+//        if (open < n){
+//            temp.append("(");
+//            generateParenthesis(n, temp, open+1, close);
+//            temp.deleteCharAt(temp.length()-1);
+//        }
+//
+//        if (close < open){
+//            temp.append(")");
+//            generateParenthesis(n, temp, open, close + 1);
+//            temp.deleteCharAt(temp.length() - 1);
+//        }
+//    }
+
+    public static void generatePowerSets(int n, int i, ArrayList<Integer> temp, int[] nums){
+        if (i == n){
+            res.add(new ArrayList<>(temp));
+            return;
+        }
+        temp.add(nums[i]);
+        generatePowerSets(n, i + 1, temp, nums);
+        temp.removeLast();
+
+        generatePowerSets(n, i + 1, temp, nums);
+    }
+
+    public static void subsequenceEqualsKOp(int k, int[] nums, int i, int sum, ArrayList<Integer> temp){
+        if (sum == k){
+            res.add(new ArrayList<>(temp));
+            return;
+        }
+        if (i >= nums.length || sum > k){
+            return;
+        }
+        temp.add(nums[i]);
+        subsequenceEqualsKOp(k, nums, i+1, sum + nums[i], temp);
+        temp.removeLast();
+
+        subsequenceEqualsKOp(k, nums, i+1, sum, temp);
+     }
+
+     public static void combinationSum1(int k, int[] nums, int i, int sum, ArrayList<Integer> temp){
+        if (sum == k){
+            res.add(new ArrayList<>(temp));
+            return;
+        }
+        if (i >= nums.length || sum > k){
+            return;
+        }
+        temp.add(nums[i]);
+        combinationSum1(k, nums, i, sum+nums[i], temp);
+
+        temp.removeLast();
+
+        combinationSum1(k, nums, i+1, sum, temp);
+     }
+
+     public static void combinationSum2(){
+        
+     }
 }
