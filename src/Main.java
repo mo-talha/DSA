@@ -47,9 +47,14 @@ class LinkedList{
 public class Main{
     static ArrayList<ArrayList<Integer>> res = new ArrayList<>();
     public static void main(String[] args){
-        int[] nums = {1, 2};
-        combinationSum1(3, nums, 0, 0, new ArrayList<>());
-        System.out.println(res);
+        char[][] board = {
+                {'A', 'B', 'C', 'E'},
+                {'S', 'F', 'C', 'S'},
+                {'A', 'D', 'E', 'E'}
+        };
+
+        boolean ans = wordSearch(board, "ABCCED");
+        System.out.println(ans);
     }
 
     public static void swap(int[] nums, int a, int b){
@@ -1319,7 +1324,75 @@ public class Main{
         combinationSum1(k, nums, i+1, sum, temp);
      }
 
-     public static void combinationSum2(){
-        
+     public static void printSumOfSubsets(int[] nums, int i, int sum){
+        if (i >= nums.length){
+            System.out.println(sum);
+            return;
+        }
+        printSumOfSubsets(nums, i + 1, sum+nums[i]);
+
+        printSumOfSubsets(nums, i+1, sum);
+     }
+
+     public static ArrayList<String> letterCombinations(String digits, int index, HashMap<Character, String> phoneBook, StringBuilder temp, ArrayList<String> res){
+        if (index == digits.length()){
+            res.add(temp.toString());
+            return res;
+        }
+        Character digit = digits.charAt(index);
+        String letters = phoneBook.get(digit);
+
+        for (char ch: letters.toCharArray()){
+            temp.append(ch);
+            res = letterCombinations(digits, index + 1, phoneBook, temp, res);
+            temp.deleteCharAt(temp.length() - 1);
+        }
+        return res;
+     }
+
+     public static boolean wordSearch(char[][] board, String word){
+        for (int i = 0; i < board.length; i++){
+            for (int j = 0; j < board[0].length; j++){
+                if (board[i][j] == word.charAt(0)){
+                    if (backtrackWordSearch(board, word, 0, i, j)){
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+     }
+
+     public static boolean backtrackWordSearch(char[][] board, String word, int index, int i, int j){
+        if (index >= word.length()){
+            return true;
+        }
+
+        if (i < 0 || i >= board.length ||
+                j < 0 || j > board[0].length ||
+                board[i][j] == '#' ||
+                board[i][j] != word.charAt(index)
+        ){
+            return false;
+        }
+        boolean res;
+        char temp = board[i][j];
+        board[i][j] = '#';
+
+//        up
+         res = backtrackWordSearch(board, word, index+1, i-1, j) ||
+
+//        down
+         backtrackWordSearch(board, word, index+1, i+1, j) ||
+
+//         left
+         backtrackWordSearch(board, word, index+1, i, j-1) ||
+
+//         right
+         backtrackWordSearch(board, word, index+1, i, j+1);
+
+         board[i][j] = temp;
+
+         return res;
      }
 }
