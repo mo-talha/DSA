@@ -46,15 +46,23 @@ class LinkedList{
 
 public class Main{
     static ArrayList<ArrayList<Integer>> res = new ArrayList<>();
+    static ArrayList<String> RAT_IN_A_MAZE_RESULT = new ArrayList<>();
+    static ArrayList<ArrayList<String>> FINAL_BOARD_WITH_N_QUEENS = new ArrayList<>();
+
     public static void main(String[] args){
         char[][] board = {
-                {'A', 'B', 'C', 'E'},
-                {'S', 'F', 'C', 'S'},
-                {'A', 'D', 'E', 'E'}
+                {'5','3','.','.','7','.','.','.','.'},
+                {'6','.','.','1','9','5','.','.','.'},
+                {'.','9','8','.','.','.','.','6','.'},
+                {'8','.','.','.','6','.','.','.','3'},
+                {'4','.','.','8','.','3','.','.','1'},
+                {'7','.','.','.','2','.','.','.','6'},
+                {'.','6','.','.','.','.','2','8','.'},
+                {'.','.','.','4','1','9','.','.','5'},
+                {'.','.','.','.','8','.','.','7','9'}
         };
-
-        boolean ans = wordSearch(board, "ABCCED");
-        System.out.println(ans);
+        sudokuSolver(board, 0, 0);
+        System.out.println(Arrays.deepToString(board));
     }
 
     public static void swap(int[] nums, int a, int b){
@@ -1395,4 +1403,206 @@ public class Main{
 
          return res;
      }
+
+     public static void ratInAMaze(){
+        int[][] board = {
+                {1, 0, 0, 0},
+                {1, 1, 0, 1},
+                {1, 1, 0, 0},
+                {0, 1, 1, 1}
+        };
+
+        backtrackRatInAMaze(board, 0, 0, new StringBuilder());
+     }
+
+     public static void backtrackRatInAMaze(int[][] board, int i, int j, StringBuilder path){
+        if (i >= board.length-1 && j >= board[0].length-1){
+            RAT_IN_A_MAZE_RESULT.add(path.toString());
+            return;
+        }
+        if (
+                i < 0 || i >= board.length ||
+                j < 0 || j >= board[0].length ||
+                        board[i][j] == 0|| board[i][j] == -1
+        )
+            return;
+
+        int temp = board[i][j];
+        board[i][j] = -1;
+
+        // Move up
+         backtrackRatInAMaze(board, i-1, j, path.append("U"));
+         path.deleteCharAt(path.length()-1);
+
+         // Move down
+         backtrackRatInAMaze(board, i+1, j, path.append("D"));
+         path.deleteCharAt(path.length()-1);
+
+         // Move left
+         backtrackRatInAMaze(board, i, j-1, path.append("L"));
+         path.deleteCharAt(path.length()-1);
+
+         // Move right
+         backtrackRatInAMaze(board, i, j+1, path.append("R"));
+         path.deleteCharAt(path.length()-1);
+
+         board[i][j] = temp;
+     }
+
+     // weekly contest 499
+     public static List<Integer> findValidElements(int[] nums) {
+         List<Integer> res = new ArrayList<>();
+
+         for (int i = 0; i < nums.length; i++){
+             if (i == 0 || i == nums.length-1) res.add(nums[i]);
+             else if (checkLeft(nums, i) || checkRight(nums, i)){
+                 res.add(nums[i]);
+             }
+         }
+         return res;
+     }
+
+    public static boolean checkLeft(int[] nums, int target){
+        for (int i = 0; i < target; i++){
+            if (nums[i] > nums[target]) return false;
+            if (nums[i] == nums[target]) return false;
+        }
+        return true;
+    }
+
+    public static boolean checkRight(int[] nums, int target){
+        for (int i = nums.length-1; i > target; i--){
+            if (nums[i] > nums[target]) return false;
+
+            if (nums[i] == nums[target]) return false;
+        }
+        return true;
+    }
+
+    public static String sortVowels(String s){
+        HashMap<Character, Integer> countOfVowels = new HashMap<>();
+        countOfVowels.put('a', 0);
+        countOfVowels.put('e', 0);
+        countOfVowels.put('i', 0);
+        countOfVowels.put('o', 0);
+        countOfVowels.put('u', 0);
+
+        for (char ch: s.toCharArray()){
+            if (countOfVowels.containsKey(ch)){
+                countOfVowels.put(ch, countOfVowels.get(ch)+1);
+            }
+        }
+        StringBuilder res = new StringBuilder();
+        // leetcode
+        for (char ch: s.toCharArray()){
+            if (countOfVowels.containsKey(ch)){
+                char nonZeroChar = getMaxVowel(countOfVowels);
+                res.append(nonZeroChar);
+            } else {
+                res.append(ch);
+            }
+        }
+        return res.toString();
+    }
+
+    public static char getMaxVowel(HashMap<Character, Integer> vowels){
+        char nonZeroChar = '0';
+
+        for (Map.Entry<Character, Integer> entry: vowels.entrySet()){
+            if (entry.getValue() > 0){
+                nonZeroChar = entry.getKey();
+                break;
+            }
+        }
+        vowels.put(nonZeroChar, vowels.get(nonZeroChar)-1);
+        return nonZeroChar;
+    }
+
+    public static void place(char[][] board, boolean[] columns, int n, int row){
+        if (row >= n){
+            FINAL_BOARD_WITH_N_QUEENS.add(construct(board));
+            return;
+        }
+
+        for (int j = 0; j < board[0].length; j++){
+            if (!columns[j] && checkDiags(board, row, j)){
+                columns[j] = true;
+                board[row][j] = 'Q';
+                place(board, columns, n, row+1);
+                board[row][j] = '.';
+                columns[j] = false;
+            }
+        }
+    }
+
+    public static boolean checkDiags(char[][] board, int row, int col){
+       int i = row, j = col;
+
+       // checking upper left dia
+        while (i >= 0 && j >= 0){
+            if (board[i][j] == 'Q') return false;
+            i-=1;
+            j-=1;
+        }
+
+        // checking upper right dia
+        i=row; j=col;
+        while (i >= 0 && j <= board[0].length-1){
+            if (board[i][j] == 'Q') return false;
+            i-=1;
+            j+=1;
+        }
+        return true;
+    }
+
+    public static ArrayList<String> construct(char[][] board){
+        ArrayList<String> res = new ArrayList<>();
+
+        for (char[] arr: board){
+            res.add(Arrays.toString(arr));
+        }
+        return res;
+    }
+
+    public static boolean sudokuSolver(char[][] board, int i, int j){
+        if (i >= 9) return true;
+        if (j >= 9) return sudokuSolver(board, i+1, 0);
+        if (board[i][j] != '.') return sudokuSolver(board, i, j+1);
+
+        for (int num = 1; num <= 9; num++){
+            if (check(board, num, i, j)){
+                char c = (char) ('0' + num);
+                board[i][j] = c;
+
+                if (sudokuSolver(board, i, j + 1)){
+                    return true;
+                }
+                board[i][j] = '.';
+            }
+        }
+        return false;
+    }
+
+    public static boolean check(char[][] board, int num, int row, int col){
+        char numChar = (char) ('0' + num);
+        // checking if num exists in row
+        for (int i = 0; i < 9; i++){
+            if (board[row][i] == numChar) return false;
+        }
+
+        // checking if num exists in col
+        for (int j = 0; j < 9; j++){
+            if (board[j][col] == numChar) return false;
+        }
+
+        // checking the grid
+        int a = (row/3) * 3, b = (col/3) * 3;
+
+        for (int i = a; i < a+3; i++){
+            for (int j = b; j < b+3; j++){
+                if (board[i][j] == numChar) return false;
+            }
+        }
+        return true;
+    }
 }
