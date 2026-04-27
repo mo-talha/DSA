@@ -50,19 +50,24 @@ public class Main{
     static ArrayList<ArrayList<String>> FINAL_BOARD_WITH_N_QUEENS = new ArrayList<>();
 
     public static void main(String[] args){
-        char[][] board = {
-                {'5','3','.','.','7','.','.','.','.'},
-                {'6','.','.','1','9','5','.','.','.'},
-                {'.','9','8','.','.','.','.','6','.'},
-                {'8','.','.','.','6','.','.','.','3'},
-                {'4','.','.','8','.','3','.','.','1'},
-                {'7','.','.','.','2','.','.','.','6'},
-                {'.','6','.','.','.','.','2','8','.'},
-                {'.','.','.','4','1','9','.','.','5'},
-                {'.','.','.','.','8','.','.','7','9'}
-        };
-        sudokuSolver(board, 0, 0);
-        System.out.println(Arrays.deepToString(board));
+//        char[][] board = {
+//                {'5','3','.','.','7','.','.','.','.'},
+//                {'6','.','.','1','9','5','.','.','.'},
+//                {'.','9','8','.','.','.','.','6','.'},
+//                {'8','.','.','.','6','.','.','.','3'},
+//                {'4','.','.','8','.','3','.','.','1'},
+//                {'7','.','.','.','2','.','.','.','6'},
+//                {'.','6','.','.','.','.','2','8','.'},
+//                {'.','.','.','4','1','9','.','.','5'},
+//                {'.','.','.','.','8','.','.','7','9'}
+//        };
+//        sudokuSolver(board, 0, 0);
+//        System.out.println(Arrays.deepToString(board));
+//        String ans = removeOutermostParenthesis("(()())");
+//        System.out.println(ans);
+
+        String ans = largestOddNumber("4206");
+        System.out.println(ans);
     }
 
     public static void swap(int[] nums, int a, int b){
@@ -1604,5 +1609,46 @@ public class Main{
             }
         }
         return true;
+    }
+
+    // String questions
+    public static String removeOutermostParenthesis(String s){
+        StringBuilder temp = new StringBuilder();
+        int count = 0;
+        for (char ch: s.toCharArray()){
+            if (ch == '('){
+                if (count > 0){
+                    temp.append(ch);
+                }
+                count+=1;
+            } else {
+                count-=1;
+                if (count > 0){
+                    temp.append(ch);
+                }
+            }
+        }
+        return temp.toString();
+    }
+
+    public static boolean palindromeCheck(String s){
+        int i = 0, j = s.length()-1;
+
+        while (i <= j){
+            if (s.charAt(i) != s.charAt(j)) return false;
+            i+=1;
+            j-=1;
+        }
+        return true;
+    }
+
+    public static String largestOddNumber(String s){
+        for (int i = s.length()-1; i >= 0; i--){
+            int num = s.charAt(i) - '0';
+            if (num % 2 == 1){
+                return s.substring(0, i+1);
+            }
+        }
+        return "";
     }
 }
