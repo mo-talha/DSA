@@ -66,7 +66,9 @@ public class Main{
 //        String ans = removeOutermostParenthesis("(()())");
 //        System.out.println(ans);
 
-        String ans = largestOddNumber("4206");
+//        String ans = sortCharactersByFrequency("queen");
+//        System.out.println(ans);
+        int ans = maxNestingDepthOfParenthesis("()(())((()()))");
         System.out.println(ans);
     }
 
@@ -1650,5 +1652,61 @@ public class Main{
             }
         }
         return "";
+    }
+
+    public static String sortCharactersByFrequency(String s){
+        HashMap<Character, Integer> map = new HashMap<>();
+        // O(N)
+        for (char ch: s.toCharArray()){
+            map.put(ch, map.getOrDefault(ch, 0)+1);
+        }
+        System.out.println(map);
+        int maxFreq = Integer.MIN_VALUE;
+        // O(N)
+        for (int value: map.values()){
+            maxFreq = Integer.max(maxFreq, value);
+        }
+
+        // O(MAX_FREQ)
+        ArrayList<ArrayList<Character>> buckets = new ArrayList<>();
+        for (int i = 1; i <= maxFreq+1; i++){
+            buckets.add(new ArrayList<>());
+        }
+
+        System.out.println(buckets);
+        // O(N)
+        for (Map.Entry<Character, Integer> entry: map.entrySet()){
+            char key = entry.getKey();
+            int value = entry.getValue();
+            buckets.get(value).add(key);
+        }
+
+        // O(MAX_FREQ)
+        StringBuilder ans = new StringBuilder();
+        for (int i = maxFreq; i >= 1; i--){
+            ArrayList<Character> bucket = buckets.get(i);
+
+            for (char ch: bucket){
+                ans.repeat(ch, i);
+            }
+        }
+
+        System.out.println(buckets);
+        return ans.toString();
+    }
+
+    public static int maxNestingDepthOfParenthesis(String s){
+        int maxCount = Integer.MIN_VALUE;
+        int count = 0;
+
+        for (char ch: s.toCharArray()){
+            if (ch == '('){
+                count+=1;
+            } else if (ch == ')'){
+                maxCount = Integer.max(maxCount, count);
+                count-=1;
+            }
+        }
+        return maxCount;
     }
 }
