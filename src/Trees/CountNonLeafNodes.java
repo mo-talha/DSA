@@ -1,5 +1,6 @@
 package Trees;
 
+import javax.swing.tree.TreeNode;
 import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.Scanner;
@@ -70,5 +71,18 @@ public class CountNonLeafNodes {
             }
         }
         return rootNode;
+    }
+
+    public static int heightOfBinaryTree(Node node) {
+        if (node == null) return 0;
+        int left = 0;
+        if (node.getLeft() != null){
+            left = heightOfBinaryTree(node.getLeft());
+        }
+        int right = 0;
+        if (node.getRight() != null) {
+            right = heightOfBinaryTree(node.getRight());
+        }
+        return 1 + Math.max(left, right);
     }
 }
